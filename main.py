@@ -1,7 +1,5 @@
 import os
 import csv
-import ast
-import time
 
 ROOT = 'courses'
 courses = os.listdir(ROOT)
