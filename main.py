@@ -12,23 +12,23 @@ def getUsernames():
     csvFile.close()
     del userNames[0]
     return userNames
-    pass
+
 
 
 def getClassInfo():
-    classDuration =0
-    classPerSem=0
     csvFile = open(f"{ROOT}/{course}/{level}/classInfo.csv", 'r')
     classData = csv.reader(csvFile, delimiter=',')
     for row in classData:
+
         if row[0].isdigit():
             classDuration = row[0]
         if row[1].isdigit():
             classPerSem = row[1]
-        CI = [classDuration,classPerSem]
-        csvFile.close()
-        return CI
-    pass
+    CI = [classDuration,classPerSem]
+    csvFile.close()
+    return CI
+
+
 
 
 def getBBabsence():
@@ -54,7 +54,7 @@ def getAttendanceLists():
             FileCount += 1
     return AttendanceLists, FileCount
 
-
+#what was the error on your screen? there is no written file as a output
 
 def getCUabsence():
     CUList={}
@@ -141,7 +141,6 @@ def getCBBAbsence():
         i+=1
         list.append(round(entry,2))
     return list
-    pass
 
 
 def getBBStatus():
