@@ -16,6 +16,8 @@ def getUsernames():
 
 
 def getClassInfo():
+    classDuration =0
+    classPerSem=0
     csvFile = open(f"{ROOT}/{course}/{level}/classInfo.csv", 'r')
     classData = csv.reader(csvFile, delimiter=',')
     for row in classData:
@@ -40,8 +42,7 @@ def getBBabsence():
                     if item == 'Absent':
                         BBcount+=1
                 BBAbsence.append(BBcount)
-        return BBAbsence
-    pass
+    return BBAbsence
 
 
 def getAttendanceLists():
