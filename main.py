@@ -1,5 +1,4 @@
 import os
-import csv
 
 
 ROOT = 'courses'
@@ -17,9 +16,12 @@ def getUsernames():
 
 def getClassInfo():
     csvFile = open(f"{ROOT}/{course}/{level}/classInfo.csv", 'r')
-    classData = csv.reader(csvFile, delimiter=',')
-    for row in classData:
-
+    readdata = []
+    for line in csvFile:
+        read = csvFile.read().rstrip("\n")
+        read = read.split(',')
+        readdata.append(read)
+    for row in readdata:
         if row[0].isdigit():
             classDuration = row[0]
         if row[1].isdigit():
@@ -34,14 +36,17 @@ def getClassInfo():
 def getBBabsence():
     BBAbsence=[]
     csvFile =  open(f"{ROOT}/{course}/{level}/attendance_BB.csv", 'r')
-    attendanceBB = csv.reader(csvFile, delimiter=',')
+    attendanceBB = []
+    for line in csvFile:
+        row = line.split(',')
+        attendanceBB.append(row)
     for row in attendanceBB:
-            if row[1] in userList:
-                BBcount =0
-                for item in row:
-                    if item == 'Absent':
-                        BBcount+=1
-                BBAbsence.append(BBcount)
+        if row[1] in userList:
+            BBcount = 0
+            for item in row:
+                if item == 'Absent':
+                    BBcount += 1
+            BBAbsence.append(BBcount)
     return BBAbsence
 
 
@@ -54,7 +59,7 @@ def getAttendanceLists():
             FileCount += 1
     return AttendanceLists, FileCount
 
-#what was the error on your screen? there is no written file as a output
+
 
 def getCUabsence():
     CUList={}
@@ -63,7 +68,10 @@ def getCUabsence():
         CUList.update({name:0})
     for lecture in lectures:
         csvFile =  open(f"{ROOT}/{course}/{level}/{lecture}")
-        CUData = csv.reader(csvFile, delimiter=",")
+        CUData = []
+        for line in csvFile:
+            row = line.split(',')
+            CUData.append(row)
         for row in CUData:
             for user in CUList:
                 if user == row[1]:
