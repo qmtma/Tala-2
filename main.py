@@ -10,7 +10,7 @@ def users():
     del userNames[0]
     return userNames
 
-def class_Details():
+def class_info():
     Read = open(f"{ROOT}/{directory}/{file}/classInfo.csv", 'r')
     contents = []
     for line in Read:
@@ -26,7 +26,7 @@ def class_Details():
     Read.close()
     return CD
 
-def blackBoard_Absence():
+def BBA(All_users):
     BBAbsence=[]
     csvFile =  open(f"{ROOT}/{directory}/{file}/attendance_BB.csv", 'r')
     attendanceBB = []
@@ -42,7 +42,7 @@ def blackBoard_Absence():
             BBAbsence.append(BBcount)
     return BBAbsence
 
-def sheets():
+def sheets(AD_Files):
     sheets=[]
     Count = 0
     for file in AD_Files:
@@ -51,7 +51,7 @@ def sheets():
             Count += 1
     return sheets, Count
 
-def collab_ultra():
+def CU(All_users,lectures,CD,lectures_count):
     CUList={}
     CUAbsence =[]
     for name in All_users:
@@ -80,7 +80,7 @@ def collab_ultra():
         CUAbsence.append(entry)
     return CUAbsence
 
-def collaborate_percentage():
+def CU_percentage(All_users,collaborate_ultra,lectures_count):
     i=0
     list = []
     for user in All_users:
@@ -90,7 +90,7 @@ def collaborate_percentage():
         i+=1
     return list
 
-def black_board_percentage():
+def BB_percentage(All_users,Black_board,lectures_count):
     list = []
     i=0
     for user in All_users:
@@ -99,7 +99,7 @@ def black_board_percentage():
         list.append(round(entry,2))
     return list
 
-def cumulative_colab_ultra():
+def CCU(All_users,collaborate_ultra,CD):
     list = []
     i=0
     for user in All_users:
@@ -108,7 +108,7 @@ def cumulative_colab_ultra():
         list.append(round(entry,2))
     return list
 
-def collab_status():
+def CS(All_users,C_C_Ultra):
     list=[]
     i=0
     for user in All_users:
@@ -120,7 +120,7 @@ def collab_status():
         i+=1
     return list
 
-def cumulative_BB_absence():
+def CBB(All_users,Black_board,CD):
     list=[]
     i=0
     for user in All_users:
@@ -129,7 +129,7 @@ def cumulative_BB_absence():
         list.append(round(entry,2))
     return list
 
-def Black_Status():
+def BS(All_users,C_BB_Absence):
     list = []
     i = 0
     for user in All_users:
@@ -145,42 +145,51 @@ def Black_Status():
         i+=1
     return list
 
-def extract_sheet():
+def sheet(All_users,Black_board,collaborate_ultra,C_percentage,B_pecentage,C_C_Ultra,C_Status,C_BB_Absence,general_status):
     WriteFile = open(f"{ROOT}/{directory}/CUvsBBReport_{directory}_{file}.txt", 'w')
 
     WriteFile.write(
-        "Username       CU_Absance  BB_Absance  CU_Absance%  BB_Absance%  C_CU_Absance%  CU_Status  C_BB_Absance%  BB_Status\n")
+        "Username       |CU_Absance | BB_Absance | CU_Absance% | BB_Absance% | C_CU_Absance% | CU_Status | C_BB_Absance% | BB_Status|\n")
     i = 0
+    WriteFile.write(f"{str('-')*len('Username       |CU_Absance | BB_Absance | CU_Absance% | BB_Absance% | C_CU_Absance% | CU_Status | C_BB_Absance% | BB_Status|')}\n")
     for user in All_users:
-        len0 = len("Username       ") - len(user)
-        len1 = len("CU_Absance No ") - len(str(collaborate_ultra[i]))
-        len2 = len(" BB_Absance No ") - len(str(Black_board[i]))
+        len0 = len("Username      |") - len(user)
+        len1 = len("CU_Absance ") - len(str(collaborate_ultra[i]))
+        len2 = len(" BB_Absance ") - len(str(Black_board[i]))
         len3 = len(" CU_Absance% ") - len(str(C_percentage[i]))
         len4 = len(" BB_Absance% ") - len(str(B_pecentage[i]))
         len5 = len(" C_CU_Absance% ") - len(str(C_C_Ultra[i]))
         len6 = len(" CU_Status ") - len(C_Status[i])
         len7 = len(" C_BB_Absance% ") - len(str(C_BB_Absence[i]))
-        len8 = len(" BB_Status") - len(general_status[i])
+        len8 = len("BB_Status ") - len(general_status[i])
         WriteFile.writelines(
-            f"{user}{(len0 * ' ')}{collaborate_ultra[i]}{(len1 * ' ')}{Black_board[i]}{(len2 * ' ')}{C_percentage[i]}{(len3 * ' ')}{B_pecentage[i]}{(len4 * ' ')}{C_C_Ultra[i]}{(len5 * ' ')}{C_Status[i]}{(len6 * ' ')}{C_BB_Absence[i]}{(len7 * ' ')}{general_status[i]}\n")
+            f"{user}{(len0 * ' ')}|{collaborate_ultra[i]}{(len1 * ' ')}|{Black_board[i]}{(len2 * ' ')}|{C_percentage[i]}{(len3 * ' ')}|{B_pecentage[i]}{(len4 * ' ')}|{C_C_Ultra[i]}{(len5 * ' ')}|{C_Status[i]}{(len6 * ' ')}|{C_BB_Absence[i]}{(len7 * ' ')}|{general_status[i]}{(len8 * ' ')}|\n")
         i += 1
+        WriteFile.write(
+            f"{str('-') * len('Username       |CU_Absance | BB_Absance | CU_Absance% | BB_Absance% | C_CU_Absance% | CU_Status | C_BB_Absance% | BB_Status|')}\n")
     WriteFile.close()
+
+
+def generate_file():
+    AD_Files = os.listdir(f"{ROOT}/{directory}/{file}")
+    All_users = users()
+    CD = class_info()
+    lectures, lectures_count = sheets(AD_Files)
+    Black_board = BBA(All_users)
+    collaborate_ultra = CU(All_users,lectures,CD,lectures_count)
+    C_percentage = CU_percentage(All_users,collaborate_ultra,lectures_count)
+    B_pecentage = BB_percentage(All_users,Black_board,lectures_count)
+    C_C_Ultra = CCU(All_users,collaborate_ultra,CD)
+    C_Status = CS(All_users,C_C_Ultra)
+    C_BB_Absence = CBB(All_users,Black_board,CD)
+    general_status = BS(All_users,C_BB_Absence)
+    sheet(All_users,Black_board,collaborate_ultra,C_percentage,B_pecentage,C_C_Ultra,C_Status,C_BB_Absence,general_status)
+    pass
+
 
 for directory in courses:
     if os.path.isdir(f"{ROOT}/{directory}"):
         subDir = os.listdir(f"{ROOT}/{directory}")
         for file in subDir:
             if os.path.isdir(f"{ROOT}/{directory}/{file}"):
-                AD_Files = os.listdir(f"{ROOT}/{directory}/{file}")
-                All_users = users()
-                CD = class_Details()
-                lectures , lectures_count = sheets()
-                Black_board = blackBoard_Absence()
-                collaborate_ultra = collab_ultra()
-                C_percentage = collaborate_percentage()
-                B_pecentage = black_board_percentage()
-                C_C_Ultra = cumulative_colab_ultra()
-                C_Status = collab_status()
-                C_BB_Absence = cumulative_BB_absence()
-                general_status = Black_Status()
-                extract_sheet()
+                generate_file()
