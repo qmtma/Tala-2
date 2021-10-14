@@ -153,22 +153,19 @@ def sheet(All_users,Black_board,collaborate_ultra,C_percentage,B_pecentage,C_C_U
     i = 0
     WriteFile.write(f"{str('-')*len('Username       |CU_Absance | BB_Absance | CU_Absance% | BB_Absance% | C_CU_Absance% | CU_Status | C_BB_Absance% | BB_Status|')}\n")
     for user in All_users:
-        len0 = len("Username      |") - len(user)
-        len1 = len("CU_Absance ") - len(str(collaborate_ultra[i]))
-        len2 = len(" BB_Absance ") - len(str(Black_board[i]))
-        len3 = len(" CU_Absance% ") - len(str(C_percentage[i]))
-        len4 = len(" BB_Absance% ") - len(str(B_pecentage[i]))
-        len5 = len(" C_CU_Absance% ") - len(str(C_C_Ultra[i]))
-        len6 = len(" CU_Status ") - len(C_Status[i])
-        len7 = len(" C_BB_Absance% ") - len(str(C_BB_Absence[i]))
-        len8 = len("BB_Status ") - len(general_status[i])
+        len0 = len(" BB_Absance ") - len(str(Black_board[i]))
+        len1 = len(" CU_Absance% ") - len(str(C_percentage[i]))
+        len2 = len(" BB_Absance% ") - len(str(B_pecentage[i]))
+        len3 = len(" C_CU_Absance% ") - len(str(C_C_Ultra[i]))
+        len4 = len(" CU_Status ") - len(C_Status[i])
+        len5 = len(" C_BB_Absance% ") - len(str(C_BB_Absence[i]))
+        len6 = len("BB_Status ") - len(general_status[i])
         WriteFile.writelines(
-            f"{user}{(len0 * ' ')}|{collaborate_ultra[i]}{(len1 * ' ')}|{Black_board[i]}{(len2 * ' ')}|{C_percentage[i]}{(len3 * ' ')}|{B_pecentage[i]}{(len4 * ' ')}|{C_C_Ultra[i]}{(len5 * ' ')}|{C_Status[i]}{(len6 * ' ')}|{C_BB_Absence[i]}{(len7 * ' ')}|{general_status[i]}{(len8 * ' ')}|\n")
+            user + (6 * ' ') + "|" + str(collaborate_ultra[i]) + (10 * ' ') + "|" + str(Black_board[i]) + (len0 * ' ') + "|" + str(C_percentage[i]) + (len1 * ' ') + "|" + str(B_pecentage[i]) + (len2 * ' ') + "|" + str(C_C_Ultra[i]) + (len3 * ' ') + "|" + str(C_Status[i]) + (len4 * ' ') + "|" + str(C_BB_Absence[i]) + (len5 * ' ') + "|" + str(general_status[i]) + (len6 * ' ') + "\n")
         i += 1
         WriteFile.write(
             f"{str('-') * len('Username       |CU_Absance | BB_Absance | CU_Absance% | BB_Absance% | C_CU_Absance% | CU_Status | C_BB_Absance% | BB_Status|')}\n")
     WriteFile.close()
-
 
 def generate_file():
     AD_Files = os.listdir(f"{ROOT}/{directory}/{file}")
@@ -185,7 +182,6 @@ def generate_file():
     general_status = BS(All_users,C_BB_Absence)
     sheet(All_users,Black_board,collaborate_ultra,C_percentage,B_pecentage,C_C_Ultra,C_Status,C_BB_Absence,general_status)
     pass
-
 
 for directory in courses:
     if os.path.isdir(f"{ROOT}/{directory}"):
