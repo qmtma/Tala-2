@@ -3,15 +3,28 @@ import os
 ROOT = 'courses'
 courses = os.listdir(ROOT)
 
-def users():
-    Read = open(f"{ROOT}/{directory}/{file}/classList.csv", 'r')
+def users_BBA():
+    Read = open(dir2 + "/classList.csv", 'r')
     userNames = Read.read().strip(',').split()
     Read.close()
     del userNames[0]
-    return userNames
+    BBAbsence = []
+    csvFile = open(dir2 + "/attendance_BB.csv", 'r')
+    attendanceBB = []
+    for line in csvFile:
+        row = line.split(',')
+        attendanceBB.append(row)
+    for row in attendanceBB:
+        if row[1] in userNames:
+            BBcount = 0
+            for item in row:
+                if item == 'Absent':
+                    BBcount += 1
+            BBAbsence.append(BBcount)
+    return userNames, BBAbsence
 
 def class_info():
-    Read = open(f"{ROOT}/{directory}/{file}/classInfo.csv", 'r')
+    Read = open(dir2 +"/classInfo.csv", 'r')
     contents = []
     for line in Read:
         read = Read.read().rstrip("\n")
@@ -26,21 +39,6 @@ def class_info():
     Read.close()
     return CD
 
-def BBA(All_users):
-    BBAbsence=[]
-    csvFile =  open(f"{ROOT}/{directory}/{file}/attendance_BB.csv", 'r')
-    attendanceBB = []
-    for line in csvFile:
-        row = line.split(',')
-        attendanceBB.append(row)
-    for row in attendanceBB:
-        if row[1] in All_users:
-            BBcount = 0
-            for item in row:
-                if item == 'Absent':
-                    BBcount += 1
-            BBAbsence.append(BBcount)
-    return BBAbsence
 
 def sheets(AD_Files):
     sheets=[]
@@ -52,20 +50,22 @@ def sheets(AD_Files):
     return sheets, Count
 
 def CU(All_users,lectures,CD,lectures_count):
-    CUList={}
+    CUList=[]
     CUAbsence =[]
     for name in All_users:
-        CUList.update({name:0})
+        CUList.append(0)
     for lecture in lectures:
-        csvFile =  open(f"{ROOT}/{directory}/{file}/{lecture}")
+        dir3 = os.path.join(dir2, lecture)
+        csvFile =  open(dir3)
         CUData = []
         for line in csvFile:
             row = line.split(',')
             CUData.append(row)
         for row in CUData:
-            for user in CUList:
+            i = 0
+            for user in All_users:
                 if user == row[1]:
-                    entry = CUList.get(user)
+                    entry = CUList[i]
                     entry += 1
                     attendedTime = row[6]
                     attendedH = attendedTime[0]
@@ -73,22 +73,23 @@ def CU(All_users,lectures,CD,lectures_count):
                     attendedM = int(attendedM) + (int(attendedH) * 60)
                     if int(attendedM) < (0.75 * int(CD[0])):
                         entry -= 1
-                    CUList.update({user: entry})
+                    CUList[i] = entry
+
+                i += 1
+    i = 0
     for user in CUList:
-        entry = CUList.get(user)
+        entry = CUList[i]
         entry = lectures_count - entry
         CUAbsence.append(entry)
-    return CUAbsence
-
-def CU_percentage(All_users,collaborate_ultra,lectures_count):
-    i=0
-    list = []
-    for user in All_users:
-        entry = (float(collaborate_ultra[i])/float(lectures_count))*100
-        entry = round(entry,2)
-        list.append(entry)
         i+=1
-    return list
+    list2 = []
+    i=0
+    for user in All_users:
+        entry = (float(CUAbsence[i]) / float(lectures_count)) * 100
+        entry = round(entry, 2)
+        list2.append(entry)
+        i += 1
+    return CUAbsence, list2
 
 def BB_percentage(All_users,Black_board,lectures_count):
     list = []
@@ -101,49 +102,38 @@ def BB_percentage(All_users,Black_board,lectures_count):
 
 def CCU(All_users,collaborate_ultra,CD):
     list = []
+    list2 = []
     i=0
     for user in All_users:
         entry = (int(collaborate_ultra[i])/float(CD[1]))*100
-        i+=1
         list.append(round(entry,2))
-    return list
-
-def CS(All_users,C_C_Ultra):
-    list=[]
-    i=0
-    for user in All_users:
-        if float(C_C_Ultra[i])>25:
-            list.append("Dismissed")
-        elif float(C_C_Ultra[i])<25 and float(C_C_Ultra[i])>15:
-            list.append("Warning")
-        else: list.append("OK")
-        i+=1
-    return list
+        if float(list[i]) > 25:
+            list2.append("Dismissed")
+        elif float(list[i]) < 25 and float(list[i]) > 15:
+            list2.append("Warning")
+        else:
+            list2.append("OK")
+        i += 1
+    return list, list2
 
 def CBB(All_users,Black_board,CD):
     list=[]
+    list2 = []
     i=0
     for user in All_users:
         entry = (int(Black_board[i])/float(CD[1]))*100
-        i+=1
         list.append(round(entry,2))
-    return list
-
-def BS(All_users,C_BB_Absence):
-    list = []
-    i = 0
-    for user in All_users:
-        if float(C_BB_Absence[i])>25:
+        if float(list[i])>25:
             entry = "Dismissed"
-            list.append(entry)
-        elif float(C_BB_Absence[i])<25 and float(C_BB_Absence[i])>15:
+            list2.append(entry)
+        elif float(list[i])<25 and float(list[i])>15:
             entry = "Warning"
-            list.append(entry)
+            list2.append(entry)
         else:
             entry = "OK"
-            list.append(entry)
-        i+=1
-    return list
+            list2.append(entry)
+        i += 1
+    return list, list2
 
 def sheet(All_users,Black_board,collaborate_ultra,C_percentage,B_pecentage,C_C_Ultra,C_Status,C_BB_Absence,general_status):
     WriteFile = open(f"{ROOT}/{directory}/CUvsBBReport_{directory}_{file}.txt", 'w')
@@ -168,24 +158,22 @@ def sheet(All_users,Black_board,collaborate_ultra,C_percentage,B_pecentage,C_C_U
     WriteFile.close()
 
 def generate_file():
-    AD_Files = os.listdir(f"{ROOT}/{directory}/{file}")
-    All_users = users()
+    AD_Files = os.listdir(dir2)
+    All_users, Black_board = users_BBA()
     CD = class_info()
     lectures, lectures_count = sheets(AD_Files)
-    Black_board = BBA(All_users)
-    collaborate_ultra = CU(All_users,lectures,CD,lectures_count)
-    C_percentage = CU_percentage(All_users,collaborate_ultra,lectures_count)
+    collaborate_ultra,C_percentage = CU(All_users,lectures,CD,lectures_count)
     B_pecentage = BB_percentage(All_users,Black_board,lectures_count)
-    C_C_Ultra = CCU(All_users,collaborate_ultra,CD)
-    C_Status = CS(All_users,C_C_Ultra)
-    C_BB_Absence = CBB(All_users,Black_board,CD)
-    general_status = BS(All_users,C_BB_Absence)
+    C_C_Ultra, C_Status = CCU(All_users,collaborate_ultra,CD)
+    C_BB_Absence,general_status = CBB(All_users,Black_board,CD)
     sheet(All_users,Black_board,collaborate_ultra,C_percentage,B_pecentage,C_C_Ultra,C_Status,C_BB_Absence,general_status)
     pass
 
 for directory in courses:
-    if os.path.isdir(f"{ROOT}/{directory}"):
-        subDir = os.listdir(f"{ROOT}/{directory}")
+    dir1 = os.path.join(ROOT,directory)
+    if os.path.isdir(dir1):
+        subDir = os.listdir(dir1)
         for file in subDir:
-            if os.path.isdir(f"{ROOT}/{directory}/{file}"):
+            dir2 = os.path.join(dir1, file)
+            if os.path.isdir(dir2):
                 generate_file()
