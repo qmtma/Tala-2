@@ -136,12 +136,12 @@ def CBB(All_users,Black_board,CD):
     return list, list2
 
 def sheet(All_users,Black_board,collaborate_ultra,C_percentage,B_pecentage,C_C_Ultra,C_Status,C_BB_Absence,general_status):
-    WriteFile = open(f"{ROOT}/{directory}/CUvsBBReport_{directory}_{file}.txt", 'w')
+    WriteFile = open(ROOT + "/"+ directory+ "/CUvsBBReport_"+directory+"_"+file+".txt", 'w')
 
     WriteFile.write(
         "Username       |CU_Absance | BB_Absance | CU_Absance% | BB_Absance% | C_CU_Absance% | CU_Status | C_BB_Absance% | BB_Status|\n")
     i = 0
-    WriteFile.write(f"{str('-')*len('Username       |CU_Absance | BB_Absance | CU_Absance% | BB_Absance% | C_CU_Absance% | CU_Status | C_BB_Absance% | BB_Status|')}\n")
+    WriteFile.write((str('-')*124) +  "\n")
     for user in All_users:
         len0 = len(" BB_Absance ") - len(str(Black_board[i]))
         len1 = len(" CU_Absance% ") - len(str(C_percentage[i]))
