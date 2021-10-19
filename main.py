@@ -86,7 +86,7 @@ def CU(All_users,lectures,CD,lectures_count):
     i=0
     for user in All_users:
         entry = (float(CUAbsence[i]) / float(lectures_count)) * 100
-        entry = round(entry, 2)
+        entry = format(entry,'.2f')
         list2.append(entry)
         i += 1
     return CUAbsence, list2
@@ -97,7 +97,7 @@ def BB_percentage(All_users,Black_board,lectures_count):
     for user in All_users:
         entry = (int(Black_board[i])/float(lectures_count))*100
         i+=1
-        list.append(round(entry,2))
+        list.append(format(entry,'.2f'))
     return list
 
 def CCU(All_users,collaborate_ultra,CD):
@@ -154,7 +154,7 @@ def sheet(All_users,Black_board,collaborate_ultra,C_percentage,B_pecentage,C_C_U
             user + (6 * ' ') + "|" + str(collaborate_ultra[i]) + (10 * ' ') + "|" + str(Black_board[i]) + (len0 * ' ') + "|" + str(C_percentage[i]) + (len1 * ' ') + "|" + str(B_pecentage[i]) + (len2 * ' ') + "|" + str(C_C_Ultra[i]) + (len3 * ' ') + "|" + str(C_Status[i]) + (len4 * ' ') + "|" + str(C_BB_Absence[i]) + (len5 * ' ') + "|" + str(general_status[i]) + (len6 * ' ') + "\n")
         i += 1
         WriteFile.write(
-            f"{str('-') * len('Username       |CU_Absance | BB_Absance | CU_Absance% | BB_Absance% | C_CU_Absance% | CU_Status | C_BB_Absance% | BB_Status|')}\n")
+            (str('-') * 124) + '\n')
     WriteFile.close()
 
 def generate_file():
@@ -167,7 +167,7 @@ def generate_file():
     C_C_Ultra, C_Status = CCU(All_users,collaborate_ultra,CD)
     C_BB_Absence,general_status = CBB(All_users,Black_board,CD)
     sheet(All_users,Black_board,collaborate_ultra,C_percentage,B_pecentage,C_C_Ultra,C_Status,C_BB_Absence,general_status)
-    pass
+    
 
 for directory in courses:
     dir1 = os.path.join(ROOT,directory)
